@@ -2,8 +2,6 @@ let state = {};
 let observers = [];
 
 export const createStore = (reducer) => {
-
-
   function getState() {
     return state;
   }

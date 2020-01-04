@@ -1,36 +1,38 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { createStore } from './react-redux/store';
-import { reducer } from './react-redux/reducer';
+import { connect } from './react-redux/react-redux';
 import ButtonAdd from './component/add';
 import ButtonSub from './component/sub';
 
-export default class App extends React.Component {
-  constructor(props, context) {
-    super(props, context);
+const addCountAction = {
+  type: 'add',
+}
 
-    this.store = createStore(reducer);
-    this.store.state = this.store.getState();
+const subCountAction = {
+  type: 'sub',
+}
 
-    this.state = {
-      count: this.store.state.count,
+const mapStateToProps = state => {
+  return {
+    count: state.count,
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addCount: () => {
+      dispatch(addCountAction);
+    },
+    subCount: () => {
+      dispatch(subCountAction);
     }
   }
+}
 
-  componentDidMount() {
-    this.store.subscribe(() => {
-      console.log('subscribe', this.store.getState());
-
-      
-      const newState = this.store.getState();
-      
-      this.setState({
-        count: newState.count,
-      });
-
-      console.log('this.state', this.state);
-    })
+class App extends React.Component {
+  constructor(props, context) {
+    super(props, context);
   }
 
   render() {
@@ -42,7 +44,9 @@ export default class App extends React.Component {
             Edit <code>src/App.js</code> and save to reload.
           </p>
           <div>
-            React-redux-simple: {this.state.count}
+            React-redux-simple: {this.props.count}
+            <button onClick={ () => this.props.addCount()}>增加</button>
+            <button onClick={ () => this.props.subCount()}>减少</button>
             <ButtonAdd />
             <ButtonSub />
           </div>
@@ -51,3 +55,5 @@ export default class App extends React.Component {
     );
   }
 } 
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
